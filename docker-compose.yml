@@ -1,0 +1,55 @@
+version: '3'
+services:
+  gogs:
+    image: gogs/gogs:latest
+    container_name: gogs
+    ports:
+      - "3000:3000"
+      - "10022:22"
+    volumes:
+      - ./gogs:/data
+
+  drone-server:
+    image: drone/drone:latest
+    container_name: drone-server
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./drone:/var/lib/drone/
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    environment:
+      - DRONE_DEBUG=true
+      - DRONE_LOGS_TRACE=true
+      - DRONE_LOGS_DEBUG=true
+      - DRONE_OPEN=true
+      - DRONE_SERVER_HOST=drone-server
+      - DRONE_GIT_ALWAYS_AUTH=false
+      - DRONE_GOGS=true
+      - DRONE_GOGS_SKIP_VERIFY=false
+      - DRONE_GOGS_SERVER=http://gogs:3000
+      - DRONE_PROVIDER=gogs
+      - DRONE_DATABASE_DRIVER=sqlite3
+      - DRONE_DATABASE_DATASOURCE=/var/lib/drone/drone.sqlite
+      - DRONE_SERVER_PROTO=http
+      - DRONE_RPC_SECRET=${SECRET}
+      - DRONE_SECRET=${SECRET}
+
+  drone-agent:
+    image: drone/agent:latest
+    container_name: drone-agent
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    environment:
+      - DRONE_DEBUG=true
+      - DRONE_LOGS_TRACE=true
+      - DRONE_LOGS_DEBUG=true
+      - DRONE_RPC_SERVER=http://drone-server
+      - DRONE_RPC_SECRET=${SECRET}
+      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=${SECRET}
+      - DRONE_MAX_PROCS=5
