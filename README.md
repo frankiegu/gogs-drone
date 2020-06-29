@@ -6,19 +6,16 @@ light weight CI &amp; CD using gogs and drone base on docker
 
 ```shell script
 .
+├── .env
 ├── LICENSE
 ├── README.md
-└── docker-compose.yml
+├── build.sh
+├── docker-compose.yml
+└── start.sh
 ```
 
 ## step 1: build images
 
 ```shell script
 sh build.sh
-```
-
-## step 2: start
-
-```shell script
-sh start.sh
 ```
