@@ -7,6 +7,7 @@ light weight CI &amp; CD using gogs and drone base on docker
 ```shell script
 .
 ├── .env
+├── .gitignore
 ├── LICENSE
 ├── README.md
 ├── build.sh
