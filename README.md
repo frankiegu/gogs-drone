@@ -1,4 +1,4 @@
-# gogs-drone-docker
+# gogs-drone
 
 light weight CI &amp; CD using gogs and drone base on docker
 
